@@ -1,0 +1,59 @@
+#ifndef _BOARD_CONFIG_H_
+#define _BOARD_CONFIG_H_
+
+#include <driver/gpio.h>
+
+// 音频配置
+#define AUDIO_INPUT_SAMPLE_RATE  16000
+#define AUDIO_OUTPUT_SAMPLE_RATE 24000
+
+// I2S音频引脚配置（需要根据实际硬件原理图调整）
+#define AUDIO_I2S_GPIO_MCLK GPIO_NUM_16
+#define AUDIO_I2S_GPIO_WS   GPIO_NUM_15
+#define AUDIO_I2S_GPIO_BCLK GPIO_NUM_14
+#define AUDIO_I2S_GPIO_DIN  GPIO_NUM_13
+#define AUDIO_I2S_GPIO_DOUT GPIO_NUM_12
+
+// 音频编解码器配置
+#define AUDIO_CODEC_PA_PIN       GPIO_NUM_21
+#define AUDIO_CODEC_I2C_SDA_PIN  GPIO_NUM_8
+#define AUDIO_CODEC_I2C_SCL_PIN  GPIO_NUM_9
+#define AUDIO_CODEC_ES8311_ADDR  ES8311_CODEC_DEFAULT_ADDR
+
+// 按钮配置
+#define BUILTIN_LED_GPIO        GPIO_NUM_2
+#define BOOT_BUTTON_GPIO        GPIO_NUM_0
+#define VOLUME_UP_BUTTON_GPIO   GPIO_NUM_NC
+#define VOLUME_DOWN_BUTTON_GPIO GPIO_NUM_NC
+
+// 显示屏SPI配置（基于1.14寸TFT常见配置）
+#define DISPLAY_SPI_SCK_PIN     GPIO_NUM_18
+#define DISPLAY_SPI_MOSI_PIN    GPIO_NUM_23
+#define DISPLAY_DC_PIN          GPIO_NUM_4
+#define DISPLAY_SPI_CS_PIN      GPIO_NUM_5
+#define DISPLAY_RST_PIN         GPIO_NUM_17
+
+// 显示屏参数配置
+#define DISPLAY_WIDTH   240
+#define DISPLAY_HEIGHT  135
+#define DISPLAY_MIRROR_X true
+#define DISPLAY_MIRROR_Y false
+#define DISPLAY_SWAP_XY true
+
+// 显示偏移（1.14寸ST7789常见配置）
+#define DISPLAY_OFFSET_X  40
+#define DISPLAY_OFFSET_Y  53
+
+// 背光配置
+#define DISPLAY_BACKLIGHT_PIN GPIO_NUM_22
+#define DISPLAY_BACKLIGHT_OUTPUT_INVERT false
+
+// 电源管理配置
+#define BATTERY_ADC_PIN         GPIO_NUM_1
+#define CHARGING_STATUS_PIN     GPIO_NUM_3
+
+// USB配置
+#define USB_DP_PIN              GPIO_NUM_20
+#define USB_DM_PIN              GPIO_NUM_19
+
+#endif // _BOARD_CONFIG_H_
