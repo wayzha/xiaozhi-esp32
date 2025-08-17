@@ -1,170 +1,132 @@
-# ESP32S3 1.14寸TFT开发板
+# ESP32-S3 1.14TFT Board
 
-## 概述
+## Overview
 
-ESP32S3 1.14寸TFT开发板是一款基于ESP32S3FH4R2芯片的紧凑型开发板，集成了1.14寸TFT彩色显示屏、音频编解码器、锂电池管理等功能，适合用于小智AI语音聊天机器人项目。
+ESP32-S3 1.14TFT is a development board based on the ESP32-S3FH4R2 chip featuring a 1.14-inch TFT display. It includes a PH2.0 2P power connector for 3.7V lithium battery and USB charging capability.
 
-## 硬件特性
+**ESP32-S3FH4R2 Specifications:**
+- **Flash Memory**: 4MB (F = embedded Flash)
+- **PSRAM**: 2MB (H = embedded PSRAM, QUAD mode)
+- **CPU**: Dual-core Xtensa LX7 up to 240MHz with AI/ML instruction set
+- **WiFi**: 2.4GHz 802.11 b/g/n
 
-### 主控芯片
-- **芯片型号**: ESP32S3FH4R2
-- **CPU**: 双核Xtensa LX7处理器，主频240MHz
-- **Flash**: 4MB
-- **PSRAM**: 2MB
-- **WiFi**: 802.11 b/g/n
-- **蓝牙**: Bluetooth 5.0 LE
+## Hardware Features
 
-### 显示屏
-- **尺寸**: 1.14寸TFT LCD
-- **分辨率**: 240×135像素
-- **驱动芯片**: ST7789
-- **接口**: SPI
-- **颜色深度**: 16位色彩
+### Display
+- **Screen**: 1.14-inch IPS TFT
+- **Resolution**: 240×135 pixels
+- **Driver**: ST7789 chipset
+- **Colors**: Full color with wide viewing angle
 
-### 音频系统
-- **编解码器**: ES8311
-- **采样率**: 输入16kHz，输出24kHz
-- **接口**: I2S + I2C控制
+### Sensors
+- **BMP280**: Temperature and pressure sensor (I2C address 0x6B)
+  - Pressure measurement accuracy: ±1 hPa
+  - Temperature measurement accuracy: ±1.0°C
+  - Can be used as altimeter with ±1m accuracy
+- **QMI8658C**: 6-axis gyroscope and accelerometer (I2C address 0x77)
 
-### 电源管理
-- **供电方式**: USB Type-C + 3.7V锂电池
-- **电池接口**: PH2.02P连接器
-- **充电功能**: 支持USB充电
-- **电池管理**: 内置电源管理电路
+### LEDs
+- **RGB LED**: NeoPixel on GPIO33
+- **Red LED**: Status LED on GPIO13
 
-### 物理尺寸
-- **长度**: 50.80mm
-- **宽度**: 25.34mm
-- **高度**: 10.8mm（包含显示屏）
+### Power Management
+- **USB Type-C**: Power supply and battery charging
+- **PH2.0 Connector**: For 3.7V lithium battery (250mAh or larger)
+- **CHG LED**: Green charging indicator
+- **Battery Voltage**: Available on BAT pin
+- **3.3V Output**: 500mA peak current capability
 
-## 引脚配置
+### Connectivity
+- **WiFi**: ESP32-S3 built-in 2.4GHz WiFi
+- **I2C**: STEMMA QT connector for sensor expansion
+- **SH1.0 4P**: Qwiic compatible connector
 
-### 音频引脚
-```
-I2S_MCLK: GPIO16
-I2S_WS:   GPIO15
-I2S_BCLK: GPIO14
-I2S_DIN:  GPIO13
-I2S_DOUT: GPIO12
-PA_PIN:   GPIO21
-I2C_SDA:  GPIO8
-I2C_SCL:  GPIO9
-```
+### Buttons
+- **RST Button**: Reset and bootloader entry
+- **BOOT Button**: User input and ROM bootloader mode (GPIO0)
 
-### 显示屏引脚
-```
-SPI_SCK:  GPIO18
-SPI_MOSI: GPIO23
-DC:       GPIO4
-CS:       GPIO5
-RST:      GPIO17
-BL:       GPIO22
-```
+## Pin Configuration
 
-### 控制引脚
-```
-BOOT_BTN: GPIO0
-LED:      GPIO2
-BAT_ADC:  GPIO1
-CHG_STA:  GPIO3
-```
+**Note**: Some pin assignments need to be confirmed from the actual hardware pinout diagram.
 
-## 编译和烧录
+### Display (ST7789)
+- **Resolution**: 240×135 pixels
+- **SPI Interface**: Needs pin confirmation
+- **Power Control**: TFT_I2C_POWER pin (must be high)
 
-### 环境要求
-- ESP-IDF v5.0+
-- Python 3.8+
+### I2C (Sensors)
+- **SCL/SDA**: Shared by STEMMA QT connector and onboard sensors
 
-### 编译步骤
+### GPIO Pins
+- **A0-A5**: Analog input pins
+- **D5-D6, D9-D13**: Digital I/O pins
+- **High-speed SPI**: SCK, MOSI, MISO pins available
 
-1. 克隆项目代码：
-```bash
-git clone <项目地址>
-cd xiaozhi-esp32
-```
+## Current Implementation Status
 
-2. 设置ESP-IDF环境：
-```bash
-. $HOME/esp/esp-idf/export.sh
-```
+### ✅ Implemented
+- Basic board structure
+- WiFi connectivity (inherited from WifiBoard)
+- Display framework (ST7789 driver)
+- Button handling (BOOT button)
+- Power management framework
+- LED control (RGB and red LED)
 
-3. 编译固件：
-```bash
-python scripts/release.py esp32s3-1.14tft
-```
+### ⚠️ Needs Pin Configuration
+The following pins need to be confirmed from the hardware pinout:
+- Display SPI pins (SCK, MOSI, CS, DC)
+- TFT power control pin
+- Display backlight control pin
+- I2C pins for sensors (SCL, SDA)
 
-4. 烧录固件：
-```bash
-esptool.py --chip esp32s3 --port /dev/ttyUSB0 --baud 921600 write_flash -z 0x0 build/esp32s3-1.14tft.bin
-```
+### 🚧 TODO
+- Complete pin assignment in config.h
+- Implement BMP280 temperature/pressure reading
+- Implement QMI8658C motion sensing
+- Add battery monitoring
+- Audio support (if external microphone/speaker added)
 
-## 使用说明
+## Building and Flashing
 
-### 首次配置
-1. 上电后，设备会进入配网模式
-2. 使用手机连接设备热点进行WiFi配置
-3. 配置完成后设备会自动连接网络并激活
+1. **Configure pins**: Update `config.h` with correct pin assignments
+2. **Build**: `python scripts/release.py esp32s3-1.14tft`
+3. **Flash**: Use esptool or ESP-IDF flash tools
 
-### 按钮操作
-- **短按Boot按钮**: 开始/停止语音对话
-- **长按Boot按钮**: 重置WiFi配置（仅在未连网状态下）
+## Pin Assignment Help Needed
 
-### LED指示
-- **常亮**: 设备正常工作
-- **闪烁**: 网络连接中或语音识别中
-- **熄灭**: 设备休眠或故障
+To complete this board implementation, the following pin assignments from the hardware pinout are needed:
 
-### 电池管理
-- 支持3.7V锂电池供电
-- USB充电时会自动切换到USB供电
-- 低电量时会显示电量警告
-- 支持自动省电模式
+1. **TFT Display SPI**:
+   - SCK (Serial Clock)
+   - MOSI (Master Out Slave In)
+   - CS (Chip Select)
+   - DC (Data/Command)
+   - Reset (if connected)
 
-## 开发说明
+2. **TFT Control**:
+   - TFT_I2C_POWER pin
+   - Backlight control pin
 
-### 自定义配置
-如需修改引脚配置，请编辑 `config.h` 文件中的相关定义。
+3. **I2C Sensors**:
+   - SDA (Serial Data)
+   - SCL (Serial Clock)
 
-### 添加新功能
-1. 在 `esp32s3-1.14tft.cc` 中添加初始化代码
-2. 重写相应的虚函数
-3. 更新 `config.json` 中的编译配置
+## Development Notes
 
-### 调试
-- 使用USB串口进行调试输出
-- 波特率：115200
-- 支持ESP-IDF监控工具
+- This board does not include a dedicated audio codec
+- Audio functionality would require external I2S microphone/speaker
+- The implementation uses a dummy audio codec by default
+- All GPIO pins support PWM, I2C, SPI, and UART through ESP32-S3 pin muxing
+- The board supports both Arduino and CircuitPython development
 
-## 故障排除
+## Power Consumption
 
-### 常见问题
+- Deep sleep modes supported through ESP32-S3
+- Battery level monitoring available
+- USB charging management included
 
-1. **显示屏不亮**
-   - 检查SPI连接
-   - 确认背光引脚配置
-   - 检查电源供应
+## References
 
-2. **音频无输出**
-   - 检查I2S配置
-   - 确认ES8311初始化
-   - 检查PA使能引脚
-
-3. **无法连接WiFi**
-   - 重置WiFi配置
-   - 检查网络环境
-   - 确认天线连接
-
-4. **电池不充电**
-   - 检查USB连接
-   - 确认充电电路
-   - 检查电池连接
-
-### 技术支持
-如遇到问题，请提供以下信息：
-- 硬件版本
-- 固件版本
-- 错误日志
-- 复现步骤
-
-## 许可证
-本项目遵循项目根目录下的LICENSE文件。
+- [NoLogo Tech ESP32-S3 1.14TFT Product Page](https://www.nologo.tech/product/esp32/esp32s3/esp32S31.14TFT/esp32S31.14TFT.html)
+- ESP32-S3 Technical Reference Manual
+- ST7789 Display Driver Documentation

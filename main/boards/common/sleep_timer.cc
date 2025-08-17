@@ -99,7 +99,14 @@ void SleepTimer::CheckTimer() {
                     esp_light_sleep_start();
                     lvgl_port_resume();
 
-                    auto wakeup_reason = esp_sleep_get_wakeup_cause();
+                    auto wakeup_causes = esp_sleep_get_wakeup_causes();
+                    auto wakeup_reason = (wakeup_causes & ESP_SLEEP_WAKEUP_TIMER) ? ESP_SLEEP_WAKEUP_TIMER : 
+                                       (wakeup_causes & ESP_SLEEP_WAKEUP_EXT0) ? ESP_SLEEP_WAKEUP_EXT0 :
+                                       (wakeup_causes & ESP_SLEEP_WAKEUP_EXT1) ? ESP_SLEEP_WAKEUP_EXT1 :
+                                       (wakeup_causes & ESP_SLEEP_WAKEUP_TOUCHPAD) ? ESP_SLEEP_WAKEUP_TOUCHPAD :
+                                       (wakeup_causes & ESP_SLEEP_WAKEUP_ULP) ? ESP_SLEEP_WAKEUP_ULP :
+                                       (wakeup_causes & ESP_SLEEP_WAKEUP_GPIO) ? ESP_SLEEP_WAKEUP_GPIO :
+                                       ESP_SLEEP_WAKEUP_UNDEFINED;
                     ESP_LOGI(TAG, "Wake up from light sleep, wakeup_reason: %d", wakeup_reason);
                     if (wakeup_reason != ESP_SLEEP_WAKEUP_TIMER) {
                         break;
